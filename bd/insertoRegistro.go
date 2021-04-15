@@ -7,12 +7,13 @@ import (
 	"time"
 )
 
+// InsertoRegistro  inserta un registro en mongoDB del modelo Usuario
 func InsertoRegistro(u models.Usuario) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database("twitter_golang")
-	col := db.Collection("Usuarios")
+	col := db.Collection("usuarios")
 
 	u.Password, _ = EncriptarPassword(u.Password)
 
@@ -26,4 +27,3 @@ func InsertoRegistro(u models.Usuario) (string, bool, error) {
 	return ObjID.String(), true, nil
 
 }
-

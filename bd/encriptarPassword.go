@@ -2,7 +2,7 @@ package bd
 
 import "golang.org/x/crypto/bcrypt"
 
-//funcion para encriptar una contracena de usuario
+// EncriptarPassword funcion para encriptar una contracena de usuario
 func EncriptarPassword(pass string) (string, error) {
 	costo := 8
 
@@ -11,4 +11,3 @@ func EncriptarPassword(pass string) (string, error) {
 	return string(bytes), err
 
 }
-

@@ -4,16 +4,22 @@ import (
 	"encoding/json"
 	"github.com/intellij_test_golang/bd"
 	"github.com/intellij_test_golang/models"
+	"log"
 	"net/http"
 )
 
-func Registro(writer http.ResponseWriter, request * http.Request){
+func Registro(writer http.ResponseWriter, request *http.Request) {
 	var t models.Usuario
 
+	//log.Println(json.NewDecoder(request.Body).Decode(&t))
+	//cuando se usa el decode de un request body se tiene que cerrar la conexion sino va a dar "eof" al intentar decodificar la request de nuevo
+	//cuidado con imprimir el resultado de esto
+	////log.Println(json.NewDecoder(request.Body).Decode(&t))
 	err := json.NewDecoder(request.Body).Decode(&t)
+	log.Println("Nombre enviado en el JSON " + t.Nombre)
 
 	if err != nil {
-		http.Error(writer, "Errpr en los datos", 400)
+		http.Error(writer, "Error en los datos", 400)
 		return
 	}
 
@@ -32,15 +38,15 @@ func Registro(writer http.ResponseWriter, request * http.Request){
 		http.Error(writer, "Ya existe el usuario en la bd", 400)
 		return
 	}
-	_,status, err := bd.InsertoRegistro(t)
+	_, status, err := bd.InsertoRegistro(t)
 
-	if err != nil{
-		http.Error(writer, "Ocurrio un error al insertar el usuario" + err.Error(),400)
+	if err != nil {
+		http.Error(writer, "Ocurrio un error al insertar el usuario"+err.Error(), 400)
 		return
 	}
 
-	if status == false{
-		http.Error(writer, "No se logro insertar el registro del usuario",400)
+	if status == false {
+		http.Error(writer, "No se logro insertar el registro del usuario", 400)
 		return
 	}
 
