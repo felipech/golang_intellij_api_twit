@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-/*modelo de usuarios*/
+// Usuario modelo de usuarios
 type Usuario struct {
 	ID              primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Nombre          string             `bson:"nombre" json:"nombre,omitempty"`
