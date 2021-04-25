@@ -1,0 +1,45 @@
+package bd
+
+import (
+	"context"
+	"github.com/intellij_test_golang/models"
+	"go.mongodb.org/mongo-driver/bson"
+	"time"
+)
+
+// LeoTweetSeguidores leo todos los tweet de los seguidores
+func LeoTweetSeguidores(ID string, pagina int) ([]models.DevuelvoTweetsSeguidores, bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+
+	db := MongoCN.Database("twitter_golang")
+	col := db.Collection("tweet")
+
+	skip := (pagina - 1) * 20
+
+	condiciones := make([]bson.M, 0)
+
+	condiciones = append(condiciones, bson.M{"$match": bson.M{"usuarioid": ID}})
+	condiciones = append(condiciones, bson.M{
+		"$lookup": bson.M{
+			"from":         "tweet",
+			"localfield":   "usuariorelacionid",
+			"foreignField": "userid",
+			"as":           "tweet"},
+	})
+	condiciones = append(condiciones, bson.M{"$unwind": "$tweet"})
+	condiciones = append(condiciones, bson.M{"$sort": bson.M{"fecha": -1}})
+	condiciones = append(condiciones, bson.M{"$skip": skip})
+	condiciones = append(condiciones, bson.M{"$limit": 20})
+
+	cursor, err := col.Aggregate(ctx, condiciones)
+	var result []models.DevuelvoTweetsSeguidores
+
+	err = cursor.All(ctx, &result)
+
+	if err != nil {
+		return result, false
+	}
+	return result, true
+
+}

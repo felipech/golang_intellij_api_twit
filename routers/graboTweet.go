@@ -10,12 +10,12 @@ import (
 
 func GraboTweet(write http.ResponseWriter, request *http.Request) {
 
-	var mensaje models.Tweet
+	var mensaje models.GraboTweet
 
 	err := json.NewDecoder(request.Body).Decode(&mensaje)
 
 	registro := models.GraboTweet{
-		UserID:  IDUsuario,
+		UserID:  mensaje.UserID,
 		Mensaje: mensaje.Mensaje,
 		Fecha:   time.Now(),
 	}
